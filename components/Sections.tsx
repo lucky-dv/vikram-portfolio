@@ -1,6 +1,7 @@
 import { asks, faqs, manifesto, principles, site, stats, ventureEntities, ventures } from "@/lib/content";
 import type { PostCard } from "@/lib/posts";
 import CopyButton from "./CopyButton";
+import FooterMark from "./FooterMark";
 import Reveal from "./Reveal";
 
 export function Stats() {
@@ -278,9 +279,7 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div className="wrap">
-        <p className="footer-mark" aria-hidden="true">
-          Vikram <em>Parekh</em>
-        </p>
+        <FooterMark />
         <nav className="footer-ventures" aria-label="Companies">
           {ventures.map((v) => (
             <a key={v.name} href={v.url} target="_blank" rel="noopener">
