@@ -1,11 +1,15 @@
-import { asks, faqs, journey, posts, principles, site, stats, ventureEntities, ventures } from "./content";
+import { asks, faqs, journey, principles, site, stats, ventureEntities, ventures } from "./content";
+import { getWritingFeed } from "./posts";
+
+const abs = (href: string) => (href.startsWith("/") ? `${site.url}${href}` : href);
 
 const venturesBlock = () =>
   ventures
     .map((v) => `- [${v.name}](${v.url}): ${ventureEntities[v.name as keyof typeof ventureEntities].summary}`)
     .join("\n");
 
-export function llmsTxt() {
+export async function llmsTxt() {
+  const posts = await getWritingFeed();
   return `# ${site.name}
 
 > ${site.name} is a co-founder based in Ahmedabad, India, building talent infrastructure for data, AI and analytics. He co-founded datavruti (data, AI & analytics recruitment) and is building estana (estana.in) for recruitment agencies and graph (mygraph.id) for professionals.
@@ -18,7 +22,7 @@ ${venturesBlock()}
 
 ## Writing
 
-${posts.map((p) => `- [${p.title}](${p.href}) (${p.date}): ${p.excerpt}`).join("\n")}
+${posts.map((p) => `- [${p.title}](${abs(p.href)}) (${p.date}): ${p.excerpt}`).join("\n")}
 
 ## Contact
 
@@ -33,7 +37,8 @@ ${posts.map((p) => `- [${p.title}](${p.href}) (${p.date}): ${p.excerpt}`).join("
 `;
 }
 
-export function llmsFullTxt() {
+export async function llmsFullTxt() {
+  const posts = await getWritingFeed();
   return `# ${site.name}: full profile
 
 > ${site.description}
@@ -73,7 +78,7 @@ ${principles.map((p) => `- ${p.title} ${p.text}`).join("\n")}
 
 ## Writing
 
-${posts.map((p) => `- ${p.title} (${p.date}) — ${p.href}\n  ${p.excerpt}`).join("\n")}
+${posts.map((p) => `- ${p.title} (${p.date}) — ${abs(p.href)}\n  ${p.excerpt}`).join("\n")}
 
 ## Frequently asked questions
 

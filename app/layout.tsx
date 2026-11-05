@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Newsreader } from "next/font/google";
 import "lenis/dist/lenis.css";
 import "./globals.css";
-import SmoothScroll from "@/components/SmoothScroll";
 import { keywords, site } from "@/lib/content";
 import { buildJsonLd } from "@/lib/schema";
 
@@ -81,7 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd()).replace(/</g, "\\u003c") }} />
-        <SmoothScroll>{children}</SmoothScroll>
+        {children}
       </body>
     </html>
   );

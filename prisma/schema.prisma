@@ -1,0 +1,43 @@
+// Vikram Parekh portfolio: articles written from /admin.
+// Lives in datavruti's Supabase Postgres, isolated in its own "portfolio" schema.
+// DATABASE_URL / DIRECT_URL MUST end with schema=portfolio, otherwise `prisma db push`
+// would see datavruti's tables in "public" and try to drop them.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Post {
+  id             String     @id @default(cuid())
+  title          String
+  slug           String     @unique
+  excerpt        String?
+  content        String     @db.Text
+  coverImage     String?
+  coverAlt       String?
+  coverPosition  String     @default("center center")
+  coverHeight    Int        @default(420)
+  seoTitle       String?
+  seoDescription String?
+  status         PostStatus @default(DRAFT)
+  featured       Boolean    @default(false)
+  readingMinutes Int        @default(1)
+  publishedAt    DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  editorEmail    String?
+
+  @@index([status, publishedAt])
+  @@map("posts")
+}

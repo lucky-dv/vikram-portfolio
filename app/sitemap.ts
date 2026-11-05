@@ -1,11 +1,23 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/content";
+import { getPublishedPosts } from "@/lib/posts";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await getPublishedPosts();
+  const latest = posts.reduce<Date>((d, p) => (p.updatedAt > d ? p.updatedAt : d), new Date("2026-11-01"));
   return [
-    { url: `${site.url}/`, lastModified: now, changeFrequency: "monthly", priority: 1 },
-    { url: `${site.url}/llms.txt`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${site.url}/llms-full.txt`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${site.url}/`, lastModified: latest, changeFrequency: "weekly", priority: 1 },
+    { url: `${site.url}/writing`, lastModified: latest, changeFrequency: "weekly", priority: 0.8 },
+    ...posts.map((p) => ({
+      url: `${site.url}/writing/${p.slug}`,
+      lastModified: p.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      ...(p.coverImage ? { images: [p.coverImage] } : {}),
+    })),
+    { url: `${site.url}/llms.txt`, lastModified: latest, changeFrequency: "weekly", priority: 0.3 },
+    { url: `${site.url}/llms-full.txt`, lastModified: latest, changeFrequency: "weekly", priority: 0.3 },
   ];
 }

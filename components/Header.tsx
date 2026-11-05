@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { useLenis } from "lenis/react";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nav, site } from "@/lib/content";
 
@@ -10,6 +11,8 @@ export default function Header() {
   const [active, setActive] = useState<string>("");
   const [open, setOpen] = useState(false);
   const lenis = useLenis();
+  const onHome = usePathname() === "/";
+  const hrefFor = (h: string) => (onHome ? h : h === "#writing" ? "/writing" : `/${h}`);
 
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
@@ -34,7 +37,7 @@ export default function Header() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [onHome]);
 
   useEffect(() => {
     if (open) lenis?.stop();
@@ -49,14 +52,14 @@ export default function Header() {
     <>
       <header className={`site-header${scrolled ? " is-scrolled" : ""}`}>
         <div className="wrap">
-          <a className="brand" href="#top" aria-label={`${site.name}, back to top`}>
+          <a className="brand" href={onHome ? "#top" : "/"} aria-label={`${site.name}, back to top`}>
             Vikram <em>Parekh</em>
           </a>
           <nav aria-label="Primary">
             <ul className="nav-links">
               {nav.map((n) => (
                 <li key={n.href}>
-                  <a href={n.href} className={active === n.href.slice(1) ? "is-active" : undefined}>
+                  <a href={hrefFor(n.href)} className={onHome && active === n.href.slice(1) ? "is-active" : undefined}>
                     {n.label}
                   </a>
                 </li>
@@ -102,8 +105,9 @@ export default function Header() {
                   transition={{ delay: 0.05 + i * 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <a
-                    href={n.href}
+                    href={hrefFor(n.href)}
                     onClick={(e) => {
+                      if (!onHome) { setOpen(false); return; }
                       e.preventDefault();
                       setOpen(false);
                       document.documentElement.style.overflow = "";
