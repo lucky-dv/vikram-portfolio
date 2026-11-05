@@ -58,7 +58,7 @@ export default function PostsTable({ posts }: { posts: Row[] }) {
       <div className="adm-card-head">
         <div>
           <h1 className="adm-h1">Posts</h1>
-          <p className="adm-muted">Write, publish and manage everything on vikramparekh.com/writing.</p>
+          <p className="adm-muted">Write, publish and manage everything on {(process.env.NEXT_PUBLIC_SITE_URL || "").replace(/^https?:\/\//, "")}/writing.</p>
         </div>
         <a href="/admin/posts/new" className="adm-btn adm-btn-primary">
           New post

@@ -51,7 +51,7 @@ const FOCAL = [
 const toSlug = (t: string) =>
   t.toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "").trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-").slice(0, 80);
 
-const SITE = "vikramparekh.com";
+const SITE = (process.env.NEXT_PUBLIC_SITE_URL || "https://vikramparekh.com").replace(/^https?:\/\//, "");
 
 export default function PostForm({ initial }: { initial?: Initial }) {
   const router = useRouter();

@@ -1,6 +1,7 @@
 export const site = {
   name: "Vikram Parekh",
-  url: "https://vikramparekh.com",
+  // Set in next.config.ts from Vercel's production domain (becomes vikramparekh.com once connected).
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://vikramparekh.com").replace(/\/+$/, ""),
   tagline: "Data, AI & Analytics Talent Infrastructure",
   description:
     "Vikram Parekh is building talent infrastructure for data, AI and analytics: datavruti for hiring teams, estana for recruitment agencies, and graph for professionals.",

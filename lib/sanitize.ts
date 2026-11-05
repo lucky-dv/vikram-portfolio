@@ -1,5 +1,7 @@
 import sanitizeHtml from "sanitize-html";
 
+const OWN_HOSTS = ["vikramparekh.com", (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/^https?:\/\//, "")].filter(Boolean);
+
 /** Server-side allow-list for article HTML coming from the editor. */
 export function sanitizeArticle(html: string): string {
   return sanitizeHtml(html, {
@@ -18,7 +20,7 @@ export function sanitizeArticle(html: string): string {
     transformTags: {
       a: (tagName, attribs) => {
         const href = attribs.href ?? "";
-        const external = /^https?:\/\//.test(href) && !href.includes("vikramparekh.com");
+        const external = /^https?:\/\//.test(href) && !OWN_HOSTS.some((h) => href.includes(h));
         return {
           tagName,
           attribs: { ...attribs, ...(external ? { target: "_blank", rel: "noopener" } : {}) },
