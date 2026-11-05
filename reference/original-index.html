@@ -1,0 +1,401 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Vikram Parekh</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Vikram Parekh is building talent infrastructure for data, AI and analytics: graph for professionals, datavruti for hiring teams, and estana for recruitment agencies.">
+<link rel="canonical" href="https://vikramparekh.com/">
+<meta property="og:title" content="Vikram Parekh: Data, AI &amp; Analytics Talent Infrastructure">
+<meta property="og:description" content="Data, AI &amp; Analytics Talent Infrastructure. Building graph, estana and datavruti.">
+<meta property="og:type" content="profile">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Vikram Parekh",
+  "jobTitle": "Co-founder",
+  "description": "Data, AI & Analytics Talent Infrastructure. Building graph, estana and datavruti.",
+  "url": "https://vikramparekh.com/",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "datavruti",
+    "legalName": "Reflion Tech Private Limited",
+    "url": "https://www.datavruti.com"
+  },
+  "address": { "@type": "PostalAddress", "addressLocality": "Ahmedabad", "addressRegion": "Gujarat", "addressCountry": "IN" },
+  "email": "mailto:vikram@datavruti.com",
+  "sameAs": ["https://www.linkedin.com/in/vikramkparekh", "https://in.linkedin.com/company/datavruti"],
+  "knowsAbout": ["Data engineering recruitment", "Data science hiring", "AI talent acquisition", "RPO", "Recruitment agency software"]
+}
+</script>
+<style>
+/* Layout: one 680px reading column; hero and the "built" rows widen to 1080px. Sections divided by hairline rules with small caps labels. */
+:root {
+  --paper: #F5F2EC;
+  --ink: #1C1B19;
+  --muted: #4E5F55;
+  --line: #DCE0D6;
+  --accent: #1F4D3A;
+  --accent-soft: #E4ECE6;
+  --serif: "Newsreader", "Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --read: 680px;
+  --wide: 1080px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; }
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+@media (min-width: 720px) { body { font-size: 18px; } }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+
+.wrap {
+  max-width: calc(var(--wide) + 48px);
+  margin: 0 auto;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+@media (max-width: 420px) {
+  .wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+}
+.col { max-width: var(--read); }
+
+a { color: var(--accent); text-decoration: none; text-underline-offset: 3px; text-decoration-thickness: 1px; transition: color 150ms ease, text-decoration-color 150ms ease; }
+a:hover { text-decoration: underline; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+.arrow { display: inline-block; transition: transform 150ms ease; }
+a:hover .arrow { transform: translateX(3px); }
+
+.todo { font-family: var(--sans); font-size: 0.8em; color: var(--muted); background: var(--accent-soft); padding: 1px 6px; border-radius: 3px; white-space: nowrap; }
+
+/* Header */
+.site-header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 60px; }
+.brand { font-family: var(--serif); font-size: 21px; color: var(--ink); letter-spacing: -0.01em; }
+.brand:hover { text-decoration: none; color: var(--accent); }
+.nav-links { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; font-size: 15px; }
+.nav-links a { color: var(--muted); }
+.nav-links a:hover { color: var(--ink); }
+.menu { display: none; position: relative; }
+.menu summary { list-style: none; cursor: pointer; font-size: 15px; color: var(--ink); padding: 6px 0; }
+.menu summary::-webkit-details-marker { display: none; }
+.menu ul { position: absolute; right: 0; top: 40px; list-style: none; margin: 0; padding: 8px 0; min-width: 180px; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; }
+.menu li a { display: block; padding: 10px 18px; color: var(--ink); font-size: 16px; }
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  .menu { display: block; }
+}
+
+/* Type */
+h1, h2, h3 { font-family: var(--serif); font-weight: 400; letter-spacing: -0.015em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(44px, 8vw, 68px); line-height: 1.02; letter-spacing: -0.025em; }
+h2 { font-size: clamp(28px, 4vw, 36px); line-height: 1.15; }
+h3 { font-size: 22px; line-height: 1.3; }
+p { margin: 0; }
+.label {
+  font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+.muted { color: var(--muted); }
+.lede { font-family: var(--serif); font-size: clamp(22px, 3vw, 27px); line-height: 1.35; letter-spacing: -0.01em; }
+
+/* Hero */
+.hero .wrap { display: grid; grid-template-columns: 1fr; gap: 40px; padding-block: 56px 64px; }
+@media (min-width: 820px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 72px; align-items: end; padding-block: 96px 88px; }
+}
+.hero-text { display: grid; gap: 24px; min-width: 0; }
+.hero-meta { font-size: 15px; color: var(--muted); }
+.hero-links { display: flex; flex-wrap: wrap; gap: 12px 28px; margin-top: 8px; font-size: 16px; font-weight: 500; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: var(--paper); padding: 11px 18px; border-radius: 4px;
+}
+.btn:hover { text-decoration: none; opacity: 0.92; }
+.hero-links .plain { padding: 11px 0; }
+.portrait {
+  aspect-ratio: 4 / 5; width: 100%; max-width: 360px;
+  border-radius: 4px; border: 1px solid var(--line); background: var(--accent-soft);
+  display: grid; place-items: center; text-align: center; padding: 24px;
+}
+.portrait span { font-size: 14px; color: var(--muted); }
+
+/* Sections */
+section.block { border-top: 1px solid var(--line); }
+section.block > .wrap { padding-block: 64px; display: grid; gap: 28px; }
+@media (min-width: 820px) { section.block > .wrap { padding-block: 88px; } }
+.stack { display: grid; gap: 20px; }
+
+.pull { font-family: var(--serif); font-size: clamp(26px, 3.6vw, 32px); line-height: 1.25; letter-spacing: -0.015em; color: var(--accent); padding-top: 8px; }
+.asks { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 12px; }
+.asks li { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.asks span:first-child { color: var(--ink); }
+.asks a { font-weight: 500; }
+
+.timeline { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.timeline li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; padding-block: 18px; border-bottom: 1px solid var(--line); }
+.timeline .yr { font-family: var(--serif); font-size: 20px; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.5; }
+.ideas { margin: 0; border-top: 1px solid var(--line); }
+.ideas > div { padding-block: 20px; border-bottom: 1px solid var(--line); display: grid; gap: 6px; }
+.ideas dt { font-family: var(--serif); font-size: 22px; line-height: 1.3; letter-spacing: -0.01em; }
+.ideas dd { margin: 0; color: var(--muted); }
+
+/* Roles */
+.roles { display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--line); }
+@media (min-width: 640px) { .roles { grid-template-columns: 1fr 1fr; column-gap: 40px; } }
+.role { padding-block: 18px; border-bottom: 1px solid var(--line); display: grid; gap: 4px; min-width: 0; }
+.role h3 { font-size: 20px; }
+.role p { font-size: 15px; color: var(--muted); }
+.who { display: grid; gap: 10px; }
+.who ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+
+/* Steps: a real sequence, so the numbers stay */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.steps li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; padding-block: 20px; border-bottom: 1px solid var(--line); }
+.steps .n { font-family: var(--serif); font-size: 22px; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.3; }
+.steps h3 { font-size: 20px; margin-bottom: 4px; }
+.steps p { color: var(--muted); }
+.note { font-size: 15px; color: var(--muted); }
+
+/* Built */
+.built { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.built li { border-bottom: 1px solid var(--line); }
+.built a {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 32px; align-items: baseline;
+  padding-block: 22px; color: var(--ink);
+}
+@media (min-width: 720px) { .built a { grid-template-columns: 200px minmax(0, 1fr) auto; } }
+.built a:hover { text-decoration: none; }
+.built a:hover .name { color: var(--accent); }
+.built .name { font-family: var(--serif); font-size: 26px; letter-spacing: -0.015em; transition: color 150ms ease; }
+.built .desc { color: var(--muted); grid-column: 1 / -1; order: 3; }
+@media (min-width: 720px) { .built .desc { grid-column: auto; order: 0; } }
+.built .url { font-size: 14px; color: var(--accent); white-space: nowrap; }
+
+/* Testimonials */
+.quotes { display: grid; gap: 48px; }
+blockquote { margin: 0; display: grid; gap: 16px; }
+blockquote p { font-family: var(--serif); font-size: 20px; line-height: 1.5; }
+blockquote footer { font-size: 15px; color: var(--muted); }
+blockquote footer strong { color: var(--ink); font-weight: 500; display: block; }
+
+/* Writing */
+.posts { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.posts li { border-bottom: 1px solid var(--line); }
+.posts a { display: grid; gap: 6px; padding-block: 22px; color: var(--ink); }
+.posts a:hover { text-decoration: none; }
+.posts a:hover h3 { color: var(--accent); }
+.posts h3 { transition: color 150ms ease; }
+.posts time { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.posts p { color: var(--muted); }
+
+/* Contact */
+.contact { display: grid; gap: 0; border-top: 1px solid var(--line); margin: 0; }
+.contact > div { display: grid; grid-template-columns: 1fr; gap: 2px 24px; padding-block: 16px; border-bottom: 1px solid var(--line); }
+@media (min-width: 560px) { .contact > div { grid-template-columns: 140px minmax(0, 1fr); } }
+.contact dt { font-size: 14px; color: var(--muted); }
+.contact dd { margin: 0; min-width: 0; overflow-wrap: anywhere; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.copy { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 3px; padding: 1px 8px; cursor: pointer; transition: color 150ms ease, border-color 150ms ease; }
+.copy:hover { color: var(--ink); border-color: var(--muted); }
+
+.site-footer { border-top: 1px solid var(--line); }
+.site-footer .wrap { padding-block: 32px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: 14px; color: var(--muted); }
+</style>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top">Vikram Parekh</a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#building">Building</a></li>
+        <li><a href="#writing">Writing</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <details class="menu" id="mobile-menu">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#building">Building</a></li>
+          <li><a href="#writing">Writing</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="name">
+    <div class="wrap">
+      <div class="hero-text">
+        <p class="label">Data, AI &amp; Analytics Talent Infrastructure</p>
+        <h1 id="name">Vikram Parekh</h1>
+        <p class="lede">I'm building the talent infrastructure for data, AI and analytics.</p>
+        <p class="hero-meta">Building graph, estana and datavruti. Based in Ahmedabad.</p>
+        <div class="hero-links">
+          <a class="btn" href="https://www.linkedin.com/in/vikramkparekh">Connect on LinkedIn <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="plain" href="#writing">Read what I write <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="portrait" role="img" aria-label="Portrait of Vikram Parekh (placeholder)">
+        <span>[TODO: Vikram's photo]<br>4:5 portrait</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="about" aria-labelledby="about-h">
+    <div class="wrap">
+      <div class="col stack">
+        <p class="label">About</p>
+        <h2 id="about-h">One problem, three angles</h2>
+        <p>For the last decade I've worked on one problem from different angles. How do the right talent and the right opportunities find each other with more accuracy, more trust and less wasted effort?</p>
+        <p>That question led me to build three things. graph helps data, AI and analytics professionals show what they've actually done. datavruti helps companies hire them. estana helps recruitment agencies do that work at scale.</p>
+        <p>They solve different problems, but they rest on the same belief. Better information makes better hiring decisions. Whether it's a company hiring, a recruiter trying to scale, or a professional trying to represent themselves accurately, the goal is the same.</p>
+        <p class="pull">Increase signal. Reduce noise.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="building" aria-labelledby="building-h">
+    <div class="wrap">
+      <div class="col stack">
+        <p class="label">What I'm building</p>
+        <h2 id="building-h">Three ideas, one belief</h2>
+      </div>
+      <ul class="built">
+        <li><a href="https://mygraph.id"><span class="name">graph</span><span class="desc">For data, AI and analytics professionals: custom resumes, interview prep and a personal career graph. It pushes you to add the context and evidence behind what you've built, solved and achieved.</span><span class="url">mygraph.id <span class="arrow" aria-hidden="true">→</span></span></a></li>
+        <li><a href="https://www.datavruti.com"><span class="name">datavruti</span><span class="desc">Helps startups, GCCs and enterprises hire exceptional data, AI and analytics talent. We don't recruit for everything. We go deep into one domain, because specialist hiring needs specialist understanding.</span><span class="url">datavruti.com <span class="arrow" aria-hidden="true">→</span></span></a></li>
+        <li><a href="https://estana.in"><span class="name">estana</span><span class="desc">An AI-native operating system for recruitment agencies. Most agencies don't struggle for demand. They struggle because execution doesn't scale. estana raises recruiter output and consistency without adding headcount at the same rate.</span><span class="url">estana.in <span class="arrow" aria-hidden="true">→</span></span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" id="journey" aria-labelledby="journey-h">
+    <div class="wrap">
+      <div class="col stack">
+        <p class="label">How I got here</p>
+        <h2 id="journey-h">Eight years on one problem</h2>
+        <ol class="timeline">
+          <li><span class="yr">2018</span><p>I came from a tech background and started Multplyr, an HR tech business.</p></li>
+          <li><span class="yr">2021</span><p>Ravi Vyas and I moved into recruitment services. A few people trusted us with their hiring. One client became two, then three.</p></li>
+          <li><span class="yr">2023</span><p>We went all in on technology hiring. It grew the business. Then two of our largest clients left as hiring froze, and close to 80% of the business went with them.</p></li>
+          <li><span class="yr">2024</span><p>We rebranded as datavruti and kept rebuilding with more clients and more services. Getting back took more than two years.</p></li>
+          <li><span class="yr">Now</span><p>Building graph and estana alongside datavruti, so the same idea reaches professionals, companies and agencies.</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="ideas" aria-labelledby="ideas-h">
+    <div class="wrap">
+      <div class="col stack">
+        <p class="label">What I believe</p>
+        <h2 id="ideas-h">Ideas I keep coming back to</h2>
+        <dl class="ideas">
+          <div><dt>Better information makes better hiring decisions.</dt><dd>Companies, recruiters and professionals all decide better when the context and evidence behind the work are visible.</dd></div>
+          <div><dt>Specialist hiring needs specialist understanding.</dt><dd>That's why datavruti only hires for data, AI and analytics.</dd></div>
+          <div><dt>Each stage of a business needs a different answer.</dt><dd>Survival, growth and resilience call for different decisions. None of them is right forever.</dd></div>
+          <div><dt>Revenue is the starting point, not the answer.</dt><dd>Net fee income tells me what the business is really earning.</dd></div>
+          <div><dt>Manage by outcomes, then understand them.</dt><dd>Separate what a recruiter controls, influences and can't control, and coach from there.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="writing" aria-labelledby="writing-h">
+    <div class="wrap">
+      <div class="col stack">
+        <p class="label">Writing</p>
+        <h2 id="writing-h">On hiring and running a recruitment business</h2>
+        <ul class="posts">
+          <li><a href="https://www.datavruti.com/blog/the-advice-thats-right-today-can-become-wrong-tomorrow">
+            <time datetime="2026-07-07">7 Jul 2026</time>
+            <h3>The advice that's right today can become wrong tomorrow</h3>
+            <p>How focusing on tech hiring grew datavruti, then exposed it, and why survival, growth and resilience each need different decisions.</p>
+          </a></li>
+          <li><a href="https://www.datavruti.com/blog/i-managed-by-outcomes-i-just-didnt-know-what-drove-them">
+            <time datetime="2026-06-24">24 Jun 2026</time>
+            <h3>I managed by outcomes. I just didn't know what drove them.</h3>
+            <p>Separating what a recruiter controls, influences and can't control, and coaching from there.</p>
+          </a></li>
+          <li><a href="https://www.datavruti.com/blog/not-all-revenue-is-the-same">
+            <time datetime="2026-06-18">18 Jun 2026</time>
+            <h3>Not all revenue is the same</h3>
+            <p>Why net fee income, not top-line revenue, became the number I watch most closely.</p>
+          </a></li>
+          <li><a href="https://www.datavruti.com/blog/is-your-recruitment-business-healthy">
+            <time datetime="2026-06-16">16 Jun 2026</time>
+            <h3>Is your recruitment business healthy?</h3>
+            <p>The questions agency founders rarely ask each other: client concentration, recruiter productivity, forecasting.</p>
+          </a></li>
+        </ul>
+        <p class="note"><span class="todo">[TODO: add selected LinkedIn posts]</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="contact" aria-labelledby="contact-h">
+    <div class="wrap">
+      <div class="col stack">
+        <p class="label">Contact</p>
+        <h2 id="contact-h">Let's talk</h2>
+        <ul class="asks">
+          <li><span>Hiring data, AI or analytics talent?</span> <a href="https://www.datavruti.com/contact">Let's connect <span class="arrow" aria-hidden="true">→</span></a></li>
+          <li><span>Running a recruitment agency?</span> <a href="https://estana.in">See what we're building with estana <span class="arrow" aria-hidden="true">→</span></a></li>
+          <li><span>Want to better show what you've built and achieved?</span> <a href="https://mygraph.id">Tell me what you think of graph <span class="arrow" aria-hidden="true">→</span></a></li>
+        </ul>
+        <dl class="contact">
+          <div><dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/vikramkparekh">linkedin.com/in/vikramkparekh</a></dd></div>
+          <div><dt>Email</dt><dd><a href="mailto:vikram@datavruti.com" id="email">vikram@datavruti.com</a><button class="copy" type="button" data-copy="vikram@datavruti.com" id="copy-email">Copy</button></dd></div>
+          <div><dt>Based in</dt><dd><span>Ahmedabad, India</span></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© 2026 Vikram Parekh</span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('#mobile-menu a').forEach(function (a) {
+    a.addEventListener('click', function () { document.getElementById('mobile-menu').open = false; });
+  });
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.getAttribute('data-copy');
+      var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); };
+      try {
+        navigator.clipboard.writeText(text).then(done, function () { selectEmail(); });
+      } catch (e) { selectEmail(); }
+    });
+  });
+  function selectEmail() {
+    var el = document.getElementById('email');
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+</script>
+
+</body></html>
