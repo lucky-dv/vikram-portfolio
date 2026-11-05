@@ -1,14 +1,17 @@
-import { faqs, journey, keywords, posts, site, ventureEntities, ventures } from "./content";
+import { faqs, journey, keywords, site, ventureEntities, ventures } from "./content";
+import type { PostCard } from "./posts";
 
 const PERSON_ID = `${site.url}/#person`;
 const WEBSITE_ID = `${site.url}/#website`;
 const PAGE_ID = `${site.url}/#profilepage`;
 
 /**
- * One connected JSON-LD @graph. Every entity has a stable @id so search engines
+ * Homepage JSON-LD only (ProfilePage + FAQPage describe content that's on "/"): one connected @graph. Every entity has a stable @id so search engines
  * and LLM crawlers can resolve Vikram ↔ datavruti ↔ estana ↔ graph as linked entities.
  */
-export function buildJsonLd() {
+export function buildJsonLd(feed: PostCard[]) {
+  const abs = (href: string) => (href.startsWith("/") ? `${site.url}${href}` : href);
+  const posts = feed.map((p) => ({ ...p, href: abs(p.href) }));
   const ventureNodes = ventures.map((v) => {
     const e = ventureEntities[v.name as keyof typeof ventureEntities];
     const isSoftware = v.name !== "datavruti";
@@ -60,6 +63,7 @@ export function buildJsonLd() {
         jobTitle: "Co-founder",
         description: site.description,
         email: `mailto:${site.email}`,
+        telephone: site.phone,
         nationality: { "@type": "Country", name: "India" },
         homeLocation: { "@type": "Place", name: "Ahmedabad, Gujarat, India" },
         address: { "@type": "PostalAddress", addressLocality: "Ahmedabad", addressRegion: "Gujarat", addressCountry: "IN" },
@@ -127,7 +131,8 @@ export function buildJsonLd() {
         url: p.href,
         datePublished: p.date,
         author: { "@id": PERSON_ID },
-        publisher: { "@id": ventureEntities.datavruti.id },
+        // Essays on datavruti.com are published by datavruti; the ones here by Vikram himself.
+        publisher: { "@id": p.external ? ventureEntities.datavruti.id : PERSON_ID },
         inLanguage: "en",
       })),
       {

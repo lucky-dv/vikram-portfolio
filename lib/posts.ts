@@ -38,15 +38,35 @@ export const getPublishedPosts = cache(async () => {
   }
 });
 
+/** Same rule the admin enforces on save. Anything else can't exist, so skip the database (shared with datavruti). */
+export const isValidSlug = (slug: string) => slug.length <= 120 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
+
 export const getPublishedPost = cache(async (slug: string) => {
-  if (!hasDb()) return null;
+  if (!hasDb() || !isValidSlug(slug)) return null;
   try {
-    return await prisma.post.findFirst({ where: { slug, status: "PUBLISHED" } });
+    // previousSlugs isn't needed to render, and omitting it keeps articles up even on a database
+    // that hasn't had `npm run db:push` for that column yet.
+    return await prisma.post.findFirst({ where: { slug, status: "PUBLISHED" }, omit: { previousSlugs: true } });
   } catch (e) {
     console.error("[posts] failed to load post", slug, e);
     return null;
   }
 });
+
+/** Current slug of a published post that used to live at `slug`, for 301s after a URL change. */
+export async function findMovedSlug(slug: string) {
+  if (!hasDb() || !isValidSlug(slug)) return null;
+  try {
+    const p = await prisma.post.findFirst({
+      where: { previousSlugs: { has: slug }, status: "PUBLISHED" },
+      select: { slug: true },
+    });
+    return p?.slug ?? null;
+  } catch (e) {
+    console.error("[posts] failed to look up moved slug", slug, e);
+    return null;
+  }
+}
 
 /** Own posts + essays published on datavruti.com, merged by date. */
 export async function getWritingFeed(): Promise<PostCard[]> {

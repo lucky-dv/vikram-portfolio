@@ -34,7 +34,7 @@ export function About() {
         <div className="col stack prose">
           <Reveal>
             <p className="dropcap">
-              For the last decade I&rsquo;ve worked on one problem from different angles. How do the right talent and the
+              Since 2018 I&rsquo;ve worked on one problem from different angles. How do the right talent and the
               right opportunities find each other with more accuracy, more trust and less wasted effort?
             </p>
           </Reveal>
@@ -136,11 +136,11 @@ export function Principles() {
         <dl className="ideas">
           {principles.map((p, i) => (
             <Reveal key={p.title} delay={i * 0.04}>
-              <span className="idea-n">{String(i + 1).padStart(2, "0")}</span>
-              <div>
-                <dt>{p.title}</dt>
-                <dd>{p.text}</dd>
-              </div>
+              <dt>
+                <span className="idea-n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                {p.title}
+              </dt>
+              <dd>{p.text}</dd>
             </Reveal>
           ))}
         </dl>
@@ -261,6 +261,13 @@ export function Contact() {
                 <dd>
                   <a href={`mailto:${site.email}`}>{site.email}</a>
                   <CopyButton text={site.email} />
+                </dd>
+              </div>
+              <div>
+                <dt>Phone</dt>
+                <dd>
+                  <a href={site.phoneHref}>{site.phone}</a>
+                  <CopyButton text={site.phone} />
                 </dd>
               </div>
               <div>

@@ -325,3 +325,6 @@
 .adm-seo-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 12px; margin-top: -6px; border-radius: 9px; background: var(--a-line-2); }
 .adm-seo-head .adm-hint { flex: 1 1 160px; }
 .adm-seo-head .adm-btn { margin-left: auto; background: #fff; }
+
+/* Action errors on the posts list */
+.adm-card > .adm-alert { margin: 0 28px 16px; }

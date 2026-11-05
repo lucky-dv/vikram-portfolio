@@ -18,6 +18,5 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: aiBots, allow: "/", disallow: ["/admin", "/api/"] },
     ],
     sitemap: `${site.url}/sitemap.xml`,
-    host: site.url,
   };
 }

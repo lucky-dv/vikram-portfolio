@@ -14,20 +14,46 @@ export function sanitizeArticle(html: string): string {
     allowedAttributes: {
       "*": ["data-size", "data-align"],
       a: ["href", "rel", "target"],
-      img: ["src", "alt", "title", "width", "height"],
+      img: ["src", "alt", "title", "width", "height", "loading", "decoding"],
     },
     allowedSchemes: ["http", "https", "mailto"],
+    allowedSchemesByTag: { img: ["https"] }, // no mixed content
+    allowProtocolRelative: false,
     transformTags: {
       a: (tagName, attribs) => {
         const href = attribs.href ?? "";
-        const external = /^https?:\/\//.test(href) && !OWN_HOSTS.some((h) => href.includes(h));
+        const external = isExternal(href);
+        const { target: _t, rel: _r, ...rest } = attribs; // decided here, never taken from pasted HTML
         return {
           tagName,
-          attribs: { ...attribs, ...(external ? { target: "_blank", rel: "noopener" } : {}) },
+          attribs: { ...rest, ...(external ? { target: "_blank", rel: "noopener noreferrer" } : {}) },
         };
       },
+      img: (tagName, attribs) => ({
+        tagName,
+        attribs: { ...attribs, loading: "lazy", decoding: "async" },
+      }),
     },
   });
+}
+
+/** Compare hostnames exactly, so "evil.com/?vikramparekh.com" is still treated as external. */
+function isExternal(href: string) {
+  if (!/^https?:\/\//i.test(href)) return false;
+  try {
+    const host = new URL(href).hostname.replace(/^www\./, "");
+    return !OWN_HOSTS.some((h) => host === h.replace(/^www\./, "").split("/")[0]);
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Render-time touch-up for article HTML already stored in the database: makes inline images
+ * lazy-load even for posts saved before the sanitiser started adding the attributes.
+ */
+export function renderArticle(html: string) {
+  return html.replace(/<img(?![^>]*\bloading=)/g, '<img loading="lazy" decoding="async"');
 }
 
 export function textFromHtml(html: string) {

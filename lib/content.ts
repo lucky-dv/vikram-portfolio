@@ -6,6 +6,8 @@ export const site = {
   description:
     "Vikram Parekh is building talent infrastructure for data, AI and analytics: datavruti for hiring teams, estana for recruitment agencies, and graph for professionals.",
   email: "vikram@datavruti.com",
+  phone: "+91 98679 98866",
+  phoneHref: "tel:+919867998866",
   linkedin: "https://www.linkedin.com/in/vikramkparekh",
   location: "Ahmedabad, India",
 };
@@ -174,7 +176,7 @@ export const faqs = [
   },
   {
     q: "How can I contact Vikram Parekh?",
-    a: "Email vikram@datavruti.com or connect on LinkedIn at linkedin.com/in/vikramkparekh. For hiring data, AI or analytics talent, use datavruti.com/contact.",
+    a: "Email vikram@datavruti.com, call +91 98679 98866, or connect on LinkedIn at linkedin.com/in/vikramkparekh. For hiring data, AI or analytics talent, use datavruti.com/contact.",
   },
 ];
 

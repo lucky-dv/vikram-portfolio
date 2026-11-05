@@ -3,7 +3,6 @@ import { Inter, Newsreader } from "next/font/google";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 import { keywords, site } from "@/lib/content";
-import { buildJsonLd } from "@/lib/schema";
 
 const serif = Newsreader({
   subsets: ["latin"],
@@ -77,9 +76,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en-IN" className={`${serif.variable} ${sans.variable}`}>
       <head>
         <link rel="me" href={site.linkedin} />
+        {/* Scroll reveals start hidden and are animated in by JS; without JS, just show everything. */}
+        <noscript>
+          <style>{`.reveal{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
       </head>
       <body>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd()).replace(/</g, "\\u003c") }} />
         {children}
       </body>
     </html>

@@ -27,6 +27,7 @@ ${posts.map((p) => `- [${p.title}](${abs(p.href)}) (${p.date}): ${p.excerpt}`).j
 ## Contact
 
 - Email: ${site.email}
+- Phone: ${site.phone}
 - LinkedIn: ${site.linkedin}
 - Website: ${site.url}
 - Location: ${site.location}
@@ -47,7 +48,7 @@ Role: Co-founder. Location: ${site.location}. Focus: ${site.tagline}.
 
 ## About
 
-For the last decade Vikram Parekh has worked on one problem from different angles: how do the right talent and the right opportunities find each other with more accuracy, more trust and less wasted effort? That question led him to build three things. datavruti helps companies hire data, AI and analytics talent. estana helps recruitment agencies do that work at scale. graph helps data, AI and analytics professionals show what they've actually done. All three rest on the same belief: better information makes better hiring decisions.
+Since 2018 Vikram Parekh has worked on one problem from different angles: how do the right talent and the right opportunities find each other with more accuracy, more trust and less wasted effort? That question led him to build three things. datavruti helps companies hire data, AI and analytics talent. estana helps recruitment agencies do that work at scale. graph helps data, AI and analytics professionals show what they've actually done. All three rest on the same belief: better information makes better hiring decisions.
 
 ## Key facts
 
@@ -88,6 +89,7 @@ ${faqs.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}
 
 ${asks.map((a) => `- ${a.q} ${a.cta}: ${a.href}`).join("\n")}
 - Email: ${site.email}
+- Phone: ${site.phone}
 - LinkedIn: ${site.linkedin}
 `;
 }

@@ -11,7 +11,7 @@ export default function CopyButton({ text }: { text: string }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
     } catch {
-      window.prompt("Copy email address:", text);
+      window.prompt(text.includes("@") ? "Copy email address:" : "Copy phone number:", text);
     }
   };
 

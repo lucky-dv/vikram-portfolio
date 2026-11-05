@@ -51,7 +51,26 @@ const FOCAL = [
 ];
 
 const toSlug = (t: string) =>
-  t.toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "").trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-").slice(0, 80);
+  t
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9\s_-]/g, "")
+    .trim()
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80)
+    .replace(/-$/, "");
+
+/** Titles in Hindi, Gujarati etc. have no Latin letters to build a URL from; fall back to a dated one. */
+const slugFor = (slug: string, title: string) =>
+  toSlug(slug) || toSlug(title) || `post-${new Date().toISOString().slice(0, 10)}`;
+
+/** Server actions throw (not return) on session expiry or network loss; turn that into a message. */
+const failure = (e: unknown) =>
+  /Admin access required/.test(String((e as Error)?.message))
+    ? "You've been signed out. Sign in again in another tab, then save; your changes are still here."
+    : "Couldn't reach the server. Your changes are still here; try again.";
 
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL || "https://vikramparekh.com").replace(/^https?:\/\//, "");
 
@@ -67,6 +86,7 @@ export default function PostForm({ initial }: { initial?: Initial }) {
   const [panel, setPanel] = useState(false);
   const [toast, setToast] = useState<{ msg: string; tone: "ok" | "err" } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const uploads = useRef<Set<string>>(new Set());
   const titleRef = useRef<HTMLTextAreaElement>(null);
 
@@ -75,9 +95,11 @@ export default function PostForm({ initial }: { initial?: Initial }) {
     setDirty(true);
   }, []);
 
+  const toastTimer = useRef<number>(undefined);
   const notify = useCallback((msg: string, tone: "ok" | "err" = "ok") => {
     setToast({ msg, tone });
-    window.setTimeout(() => setToast(null), 2800);
+    window.clearTimeout(toastTimer.current); // a newer toast gets its full time on screen
+    toastTimer.current = window.setTimeout(() => setToast(null), tone === "err" ? 6000 : 2800);
   }, []);
 
   // autosize title / dek
@@ -88,27 +110,45 @@ export default function PostForm({ initial }: { initial?: Initial }) {
   };
   useEffect(() => grow(titleRef.current), [v.title]);
 
-  // Warn before leaving with unsaved changes; best-effort cleanup of orphaned uploads
+  // Warn before leaving with unsaved changes. Only the browser's prompt goes here: the person
+  // may still choose "Stay", so nothing destructive can happen in beforeunload.
   useEffect(() => {
-    const onUnload = (e: BeforeUnloadEvent) => {
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
       if (!dirty) return;
       e.preventDefault();
-      if (uploads.current.size) {
-        navigator.sendBeacon?.("/api/admin/cleanup", new Blob([JSON.stringify({ urls: [...uploads.current] })], { type: "application/json" }));
-      }
     };
-    window.addEventListener("beforeunload", onUnload);
-    return () => window.removeEventListener("beforeunload", onUnload);
+    // pagehide fires only once the page is really going away, i.e. after "Leave" was chosen.
+    // Then delete images uploaded since the last save; nothing saved can reference them.
+    const onPageHide = () => {
+      if (!dirty || !uploads.current.size) return;
+      navigator.sendBeacon?.("/api/admin/cleanup", new Blob([JSON.stringify({ urls: [...uploads.current] })], { type: "application/json" }));
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    window.addEventListener("pagehide", onPageHide);
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+      window.removeEventListener("pagehide", onPageHide);
+    };
   }, [dirty]);
 
+  const savingRef = useRef(false);
   const save = useCallback(
     async (status: "DRAFT" | "PUBLISHED") => {
+      if (savingRef.current) return; // ⌘S while a save is in flight would create the post twice
       if (!v.title.trim()) return notify("Add a title first.", "err");
       if (!v.content || v.content === "<p></p>") return notify("Write something first.", "err");
+      savingRef.current = true;
       setSaving(status);
-      const input: PostInput = { ...v, slug: v.slug || toSlug(v.title), status };
-      const res = id ? await updatePost(id, input) : await createPost(input);
-      setSaving(null);
+      const input: PostInput = { ...v, slug: slugFor(v.slug, v.title), status };
+      let res: Awaited<ReturnType<typeof updatePost>>;
+      try {
+        res = id ? await updatePost(id, input) : await createPost(input);
+      } catch (e) {
+        return notify(failure(e), "err");
+      } finally {
+        savingRef.current = false;
+        setSaving(null);
+      }
       if (!res.ok) return notify(res.error, "err");
       uploads.current.clear();
       setDirty(false);
@@ -152,7 +192,7 @@ export default function PostForm({ initial }: { initial?: Initial }) {
     if (!file) return;
     setCoverBusy(true);
     try {
-      const url = await uploadImage(file);
+      const { url } = await uploadImage(file);
       uploads.current.add(url);
       set("coverImage", url);
       if (!v.coverAlt) set("coverAlt", v.title);
@@ -166,8 +206,14 @@ export default function PostForm({ initial }: { initial?: Initial }) {
   const [seoBusy, setSeoBusy] = useState(false);
   const regenerateSeo = async () => {
     setSeoBusy(true);
-    const res = await suggestSeo({ title: v.title, excerpt: v.excerpt, content: v.content });
-    setSeoBusy(false);
+    let res: Awaited<ReturnType<typeof suggestSeo>>;
+    try {
+      res = await suggestSeo({ title: v.title, excerpt: v.excerpt, content: v.content });
+    } catch (e) {
+      return notify(failure(e), "err");
+    } finally {
+      setSeoBusy(false);
+    }
     if ("error" in res) return notify(res.error, "err");
     setV((p) => ({ ...p, seoTitle: res.seoTitle, seoDescription: res.seoDescription, seoAuto: true }));
     setDirty(true);
@@ -392,13 +438,22 @@ export default function PostForm({ initial }: { initial?: Initial }) {
                       <div className="row">
                         <button
                           className="adm-btn adm-btn-danger sm"
+                          disabled={deleting}
                           onClick={async () => {
-                            await deletePost(id);
-                            setDirty(false);
-                            router.push("/admin/posts");
+                            setDeleting(true);
+                            try {
+                              const res = await deletePost(id);
+                              if (!res.ok) return notify(res.error, "err");
+                              setDirty(false);
+                              router.push("/admin/posts");
+                            } catch (e) {
+                              notify(failure(e), "err");
+                            } finally {
+                              setDeleting(false);
+                            }
                           }}
                         >
-                          Delete post
+                          {deleting ? <Loader2 size={14} className="spin" /> : null} Delete post
                         </button>
                         <button className="adm-btn adm-btn-ghost sm" onClick={() => setConfirmDelete(false)}>
                           Cancel

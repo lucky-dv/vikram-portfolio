@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Reveal from "@/components/Reveal";
 import { PostList } from "@/components/Sections";
 import { site } from "@/lib/content";
 import { getWritingFeed } from "@/lib/posts";
@@ -33,7 +32,7 @@ export default async function WritingIndex() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <section className="page-hero">
         <div className="wrap">
-          <Reveal className="section-head">
+          <div className="section-head rise">
             <p className="label">Writing</p>
             <h1 className="page-title">
               Notes on hiring, <em>and building</em>
@@ -42,10 +41,10 @@ export default async function WritingIndex() {
               On hiring data, AI and analytics talent, running a recruitment business, and what I learn building datavruti,
               estana and graph.
             </p>
-          </Reveal>
+          </div>
         </div>
       </section>
-      <section className="block" id="content" aria-label="All posts">
+      <section className="block" id="content" tabIndex={-1} aria-label="All posts">
         <div className="wrap">
           {items.length ? <PostList items={items} /> : <p className="muted">Nothing published yet.</p>}
         </div>

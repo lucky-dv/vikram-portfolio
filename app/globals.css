@@ -66,6 +66,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .arrow { display: inline-block; transition: transform 250ms var(--ease); }
 a:hover .arrow { transform: translateX(4px); }
 
+/* Above-the-fold entrance in pure CSS: runs from first paint, no hydration wait, visible without JS.
+   prefers-reduced-motion (above) sets animation: none, which leaves the element simply visible. */
+.rise { animation: rise 1s var(--ease) var(--d, 0s) both; }
+.rise-fade { animation-name: fade; animation-duration: 1.2s; }
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+@keyframes fade { from { opacity: 0; } }
+
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .skip { position: absolute; left: 16px; top: -48px; z-index: 50; background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 4px; }
 .skip:focus { top: 12px; }
@@ -101,8 +108,11 @@ p { margin: 0; }
   position: fixed; inset: 0 0 auto; z-index: 20;
   padding-top: env(safe-area-inset-top, 0px);
   background: transparent; border-bottom: 1px solid transparent;
-  transition: background 300ms ease, border-color 300ms ease, backdrop-filter 300ms ease;
+  transition: background 300ms ease, border-color 300ms ease, backdrop-filter 300ms ease, transform 350ms var(--ease);
 }
+/* Article pages: header slides away while reading; the 2px reading-progress line stays at the top edge */
+.site-header.is-hidden { transform: translateY(-100%); }
+.site-header.is-hidden .progress { bottom: -2px; }
 .site-header.is-scrolled {
   background: color-mix(in srgb, var(--paper) 96%, transparent);
   backdrop-filter: saturate(1.4) blur(14px);
@@ -272,8 +282,9 @@ section.block > .wrap { padding-block: 80px; display: grid; gap: 40px; }
 
 /* Principles */
 .ideas { margin: 0; border-top: 1px solid var(--ink); }
-.ideas > div { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; padding-block: 28px; border-bottom: 1px solid var(--line); }
-.idea-n { font-size: 13px; color: var(--muted); letter-spacing: 0.08em; padding-top: 8px; font-variant-numeric: tabular-nums; }
+/* dl > div > (dt, dd) is the only valid grouping; the number sits inside the dt, hung in the left gutter */
+.ideas > div { position: relative; padding: 28px 0 28px 60px; border-bottom: 1px solid var(--line); }
+.idea-n { position: absolute; left: 0; top: 36px; font-family: var(--sans); font-size: 13px; color: var(--muted); letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
 .ideas dt { font-family: var(--serif); font-size: clamp(24px, 2.6vw, 30px); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 8px; }
 .ideas dd { margin: 0; color: var(--muted); }
 
@@ -503,8 +514,8 @@ section.block > .wrap { padding-block: 80px; display: grid; gap: 40px; }
   .timeline h3 { font-size: 21px; }
 
   /* Principles */
-  .ideas > div { grid-template-columns: 32px minmax(0, 1fr); gap: 8px; padding-block: 24px; }
-  .idea-n { padding-top: 6px; }
+  .ideas > div { padding: 24px 0 24px 40px; }
+  .idea-n { top: 30px; }
   .ideas dt { font-size: 23px; }
   .ideas dd { font-size: 16px; }
 
@@ -558,3 +569,7 @@ section.block > .wrap { padding-block: 80px; display: grid; gap: 40px; }
   .share a { padding-block: 10px; }
   .author-card { align-items: flex-start; gap: 14px; }
 }
+
+/* 404 */
+.not-found { min-height: calc(100svh - 68px); display: flex; align-items: center; }
+.not-found .wrap { width: 100%; display: grid; gap: 20px; justify-items: start; }

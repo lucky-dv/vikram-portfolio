@@ -6,13 +6,12 @@ import { useRef } from "react";
 import portrait from "@/public/vikram.jpg";
 import { site } from "@/lib/content";
 
-const ease = [0.22, 1, 0.36, 1] as const;
-
-const rise = (delay: number) => ({
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 1, delay, ease },
-});
+/**
+ * The entrance is a CSS animation (.rise in globals.css), not a JS one: it starts on first paint,
+ * so the name and portrait (the page's LCP candidates) never wait for hydration and still show
+ * when JavaScript fails. Only the scroll parallax needs JS.
+ */
+const rise = (delay: number, cls = "") => ({ className: `${cls} rise`.trim(), style: { "--d": `${delay}s` } as React.CSSProperties });
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -23,37 +22,30 @@ export default function Hero() {
     <section className="hero" ref={ref} aria-labelledby="name">
       <div className="wrap hero-grid">
         <div className="hero-text">
-          <motion.p className="label" {...rise(0.05)}>
-            {site.tagline}
-          </motion.p>
-          <motion.h1 id="name" {...rise(0.15)}>
+          <p {...rise(0.05, "label")}>{site.tagline}</p>
+          <h1 id="name" {...rise(0.15)}>
             Vikram <em>Parekh</em>
-          </motion.h1>
-          <motion.p className="lede" {...rise(0.3)}>
+          </h1>
+          <p {...rise(0.3, "lede")}>
             I&rsquo;m building the talent infrastructure for <em>data, AI and analytics.</em>
-          </motion.p>
-          <motion.p className="hero-meta" {...rise(0.4)}>
+          </p>
+          <p {...rise(0.4, "hero-meta")}>
             Co-founder of{" "}
             <a href="https://www.datavruti.com" target="_blank" rel="noopener">datavruti</a>, building{" "}
             <a href="https://estana.in" target="_blank" rel="noopener">estana</a> and{" "}
             <a href="https://mygraph.id" target="_blank" rel="noopener">graph</a>. Based in Ahmedabad, India.
-          </motion.p>
-          <motion.div className="hero-links" {...rise(0.5)}>
+          </p>
+          <div className="hero-links rise" style={{ "--d": "0.5s" } as React.CSSProperties}>
             <a className="btn" href={site.linkedin} target="_blank" rel="me noopener">
               Connect on LinkedIn <span className="arrow" aria-hidden="true">→</span>
             </a>
             <a className="plain" href="#writing">
               Read what I write <span className="arrow" aria-hidden="true">→</span>
             </a>
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div
-          className="portrait"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.2, ease }}
-        >
+        <div className="portrait rise rise-fade" style={{ "--d": "0.2s" } as React.CSSProperties}>
           <motion.div className="portrait-img" style={{ y: portraitY }}>
             <Image
               src={portrait}
@@ -64,7 +56,7 @@ export default function Hero() {
               sizes="(min-width: 900px) 40vw, 100vw"
             />
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

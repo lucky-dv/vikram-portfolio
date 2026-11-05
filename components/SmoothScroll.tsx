@@ -15,22 +15,25 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
+  // The tree stays the same either way; only Lenis' options change. (Swapping ReactLenis in and
+  // out remounted the whole page right after hydration for reduced-motion users.) Lenis rebuilds
+  // its instance when options change.
   return (
     <MotionConfig reducedMotion="user">
-      {reduced ? (
-        children
-      ) : (
-        <ReactLenis
-          root
-          options={{
-            lerp: 0.09,
-            wheelMultiplier: 1,
-            anchors: true, // offset comes from html { scroll-padding-top } (header height)
-          }}
-        >
-          {children}
-        </ReactLenis>
-      )}
+      <ReactLenis
+        root
+        options={
+          reduced
+            ? { smoothWheel: false, syncTouch: false, anchors: { immediate: true } } // native scrolling, instant jumps
+            : {
+                lerp: 0.09,
+                wheelMultiplier: 1,
+                anchors: true, // offset comes from html { scroll-padding-top } (header height)
+              }
+        }
+      >
+        {children}
+      </ReactLenis>
     </MotionConfig>
   );
 }

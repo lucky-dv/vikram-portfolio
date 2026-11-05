@@ -38,11 +38,13 @@ export default function Editor({ content, onChange, onUploaded, onError }: Props
       for (const file of images) {
         setUploading((n) => n + 1);
         try {
-          const url = await uploadImage(file);
+          const { url, width, height } = await uploadImage(file);
           onUploaded?.(url);
           const alt = file.name.replace(/\.[a-z0-9]+$/i, "").replace(/[-_]+/g, " ");
+          // width/height give the browser the aspect ratio up front (no layout shift); CSS sets the size.
+          const attrs = { src: url, alt, ...(width && height ? { width, height } : {}) };
           const chain = editor.chain().focus();
-          (pos !== undefined ? chain.insertContentAt(pos, { type: "image", attrs: { src: url, alt } }) : chain.setImage({ src: url, alt })).run();
+          (pos !== undefined ? chain.insertContentAt(pos, { type: "image", attrs }) : chain.setImage(attrs)).run();
         } catch (e) {
           onError?.((e as Error).message);
         } finally {

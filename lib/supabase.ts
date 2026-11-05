@@ -11,6 +11,22 @@ export function ownPath(url?: string | null) {
   return path && path.startsWith(PREFIX) && !path.includes("..") ? path : null;
 }
 
+/** Every image URL a post uses: the cover plus inline <img> tags. */
+export function postImageUrls(p: { coverImage?: string | null; content: string }) {
+  const inline = Array.from(p.content.matchAll(/<img[^>]+src="([^"]+)"/g), (m) => m[1]);
+  return [...new Set([p.coverImage, ...inline].filter((u): u is string => !!u))];
+}
+
+/** Public Supabase storage URL (the only image host next/image is configured for). */
+export function isStorageUrl(url: string) {
+  try {
+    const u = new URL(url);
+    return u.protocol === "https:" && u.hostname.endsWith(".supabase.co") && u.pathname.startsWith("/storage/v1/object/public/");
+  } catch {
+    return false;
+  }
+}
+
 let client: SupabaseClient | null = null;
 
 /** Service-role client for server-side uploads. Never import this from client code. */

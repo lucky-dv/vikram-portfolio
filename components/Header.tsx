@@ -3,26 +3,43 @@
 import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { useLenis } from "lenis/react";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { nav, site } from "@/lib/content";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string>("");
   const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const lenis = useLenis();
-  const onHome = usePathname() === "/";
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+  // On articles, get out of the reader's way: hide on scroll down, reveal on any scroll up.
+  const autoHide = pathname.startsWith("/writing/");
   const hrefFor = (h: string) => (onHome ? h : h === "#writing" ? "/writing" : `/${h}`);
 
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    let lastY = window.scrollY;
+    let travelled = 0; // distance moved in the current direction, to ignore tiny jitters
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 8);
+      if (!autoHide) return setHidden(false);
+      const dy = y - lastY;
+      travelled = Math.sign(dy) === Math.sign(travelled) ? travelled + dy : dy;
+      lastY = y;
+      if (y < 120) setHidden(false); // always visible near the top
+      else if (travelled > 12) setHidden(true); // scrolling down
+      else if (travelled < -6) setHidden(false); // any deliberate scroll up
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [autoHide]);
 
   useEffect(() => {
     const ids = nav.map((n) => n.href.slice(1));
@@ -43,14 +60,41 @@ export default function Header() {
     if (open) lenis?.stop();
     else lenis?.start();
     document.documentElement.style.overflow = open ? "hidden" : "";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    if (!open) return;
+
+    // Modal behaviour: focus moves into the menu, Tab cycles between the toggle and the menu
+    // links (never the page hidden behind it), Escape closes and hands focus back to the toggle.
+    const focusables = () => [
+      toggleRef.current,
+      ...Array.from(document.querySelectorAll<HTMLElement>("#mobile-menu a")),
+    ].filter((el): el is HTMLElement => !!el);
+    const first = window.setTimeout(() => focusables()[1]?.focus(), 50);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        toggleRef.current?.focus();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const els = focusables();
+      const i = els.indexOf(document.activeElement as HTMLElement);
+      const next = e.shiftKey ? (i <= 0 ? els.length - 1 : i - 1) : i === els.length - 1 ? 0 : i + 1;
+      e.preventDefault();
+      els[next]?.focus();
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.clearTimeout(first);
+      window.removeEventListener("keydown", onKey);
+    };
   }, [open, lenis]);
 
   return (
     <>
-      <header className={`site-header${scrolled ? " is-scrolled" : ""}`}>
+      <header
+        className={`site-header${scrolled ? " is-scrolled" : ""}${hidden && !open ? " is-hidden" : ""}`}
+        onFocusCapture={() => setHidden(false)}
+      >
         <div className="wrap">
           <a className="brand" href={onHome ? "#top" : "/"} aria-label={`${site.name}, back to top`}>
             Vikram <em>Parekh</em>
@@ -70,6 +114,7 @@ export default function Header() {
             Connect <span className="arrow" aria-hidden="true">→</span>
           </a>
           <button
+            ref={toggleRef}
             className="menu-toggle"
             type="button"
             aria-expanded={open}
@@ -91,6 +136,9 @@ export default function Header() {
           <motion.div
             id="mobile-menu"
             className="sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site menu"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -127,6 +175,7 @@ export default function Header() {
             </ul>
             <div className="sheet-foot">
               <a href={`mailto:${site.email}`}>{site.email}</a>
+              <a href={site.phoneHref}>{site.phone}</a>
               <span>{site.location}</span>
             </div>
           </motion.div>

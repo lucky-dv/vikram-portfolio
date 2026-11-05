@@ -15,7 +15,7 @@ export default function Reveal({ children, delay = 0, y = 24, className, as = "d
   const Tag = motion[as] as ElementType;
   return (
     <Tag
-      className={className}
+      className={className ? `reveal ${className}` : "reveal"}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}

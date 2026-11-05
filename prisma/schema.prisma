@@ -27,7 +27,7 @@ model Post {
   coverImage     String?
   coverAlt       String?
   coverPosition  String     @default("center center")
-  coverHeight    Int        @default(420)
+  coverHeight    Int        @default(640)
   seoTitle       String?
   seoDescription String?
   seoAuto        Boolean    @default(true) // SEO fields are written by Claude until edited by hand
@@ -38,6 +38,7 @@ model Post {
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
   editorEmail    String?
+  previousSlugs  String[]   @default([]) // old live URLs, 301-redirected to the current slug
 
   @@index([status, publishedAt])
   @@map("posts")

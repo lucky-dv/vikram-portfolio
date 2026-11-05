@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import Reveal from "@/components/Reveal";
+import { notFound, permanentRedirect } from "next/navigation";
 import ShareBar from "@/components/ShareBar";
 import { site } from "@/lib/content";
-import { fmtDate, getPublishedPost, getPublishedPosts } from "@/lib/posts";
-import { autoExcerpt } from "@/lib/sanitize";
+import { findMovedSlug, fmtDate, getPublishedPost, getPublishedPosts } from "@/lib/posts";
+import { autoExcerpt, renderArticle } from "@/lib/sanitize";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -46,7 +45,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PostPage({ params }: Props) {
   const { slug } = await params;
   const post = await getPublishedPost(slug);
-  if (!post || !post.publishedAt) notFound();
+  if (!post || !post.publishedAt) {
+    const moved = await findMovedSlug(slug);
+    if (moved) permanentRedirect(`/writing/${moved}`);
+    notFound();
+  }
 
   const more = (await getPublishedPosts()).filter((p) => p.slug !== post.slug).slice(0, 3);
   const url = `${site.url}/writing/${post.slug}`;
@@ -87,7 +90,8 @@ export default async function PostPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <article className="article">
         <header className="article-head wrap">
-          <Reveal className="article-head-inner">
+          {/* CSS entrance, not JS: the title is the page's largest text and must paint before hydration */}
+          <div className="article-head-inner rise">
             <a className="crumb" href="/writing">
               <span className="arrow" aria-hidden="true">←</span> All writing
             </a>
@@ -100,7 +104,7 @@ export default async function PostPage({ params }: Props) {
               <span aria-hidden="true">·</span>
               <span>{post.readingMinutes} min read</span>
             </p>
-          </Reveal>
+          </div>
         </header>
 
         {post.coverImage && (
@@ -119,9 +123,9 @@ export default async function PostPage({ params }: Props) {
           </div>
         )}
 
-        <div className="wrap article-body-wrap" id="content">
-          {/* Content is sanitised on save (lib/sanitize.ts) */}
-          <div className="prose-article" dangerouslySetInnerHTML={{ __html: post.content }} />
+        <div className="wrap article-body-wrap" id="content" tabIndex={-1}>
+          {/* Content is sanitised on save (lib/sanitize.ts); renderArticle only adds lazy-loading hints */}
+          <div className="prose-article" dangerouslySetInnerHTML={{ __html: renderArticle(post.content) }} />
           <footer className="article-foot">
             <ShareBar url={url} title={post.title} />
             <div className="author-card">

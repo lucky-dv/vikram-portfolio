@@ -43,13 +43,26 @@ export default function PostsTable({ posts }: { posts: Row[] }) {
       (p.title.toLowerCase().includes(q.toLowerCase()) || p.slug.includes(q.toLowerCase()))
   );
 
-  const run = (id: string, fn: () => Promise<unknown>) => {
+  const [error, setError] = useState<string | null>(null);
+  const run = (id: string, fn: () => Promise<{ ok: boolean; error?: string }>) => {
+    if (busyId) return;
     setBusyId(id);
+    setError(null);
     start(async () => {
-      await fn();
-      setBusyId(null);
-      setConfirmId(null);
-      router.refresh();
+      try {
+        const res = await fn();
+        if (!res.ok) setError(res.error ?? "That didn't work. Try again.");
+      } catch (e) {
+        setError(
+          /Admin access required/.test(String((e as Error)?.message))
+            ? "You've been signed out. Reload to sign in again."
+            : "Couldn't reach the server. Try again."
+        );
+      } finally {
+        setBusyId(null);
+        setConfirmId(null);
+        router.refresh();
+      }
     });
   };
 
@@ -78,6 +91,12 @@ export default function PostsTable({ posts }: { posts: Row[] }) {
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search posts" />
         </label>
       </div>
+
+      {error && (
+        <p className="adm-alert" role="alert">
+          {error}
+        </p>
+      )}
 
       {rows.length === 0 ? (
         <div className="adm-empty">
@@ -121,7 +140,7 @@ export default function PostsTable({ posts }: { posts: Row[] }) {
                 {confirmId === p.id ? (
                   <>
                     <span className="adm-muted sm">Delete for good?</span>
-                    <button className="adm-btn adm-btn-danger sm" onClick={() => run(p.id, () => deletePost(p.id))}>
+                    <button className="adm-btn adm-btn-danger sm" disabled={!!busyId} onClick={() => run(p.id, () => deletePost(p.id))}>
                       Delete
                     </button>
                     <button className="adm-btn adm-btn-ghost sm" onClick={() => setConfirmId(null)}>
