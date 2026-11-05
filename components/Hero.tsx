@@ -22,7 +22,6 @@ export default function Hero() {
     <section className="hero" ref={ref} aria-labelledby="name">
       <div className="wrap hero-grid">
         <div className="hero-text">
-          <p {...rise(0.05, "label")}>{site.tagline}</p>
           <h1 id="name" {...rise(0.15)}>
             Vikram <em>Parekh</em>
           </h1>

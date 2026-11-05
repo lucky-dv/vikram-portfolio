@@ -51,8 +51,8 @@ export const ventures = [
 ];
 
 export const journey = [
-  { year: "2018", title: "Multplyr", text: "I came from a tech background and started Multplyr, an HR tech business." },
-  { year: "2021", title: "Into recruitment", text: "Ravi Vyas and I moved into recruitment services. A few people trusted us with their hiring. One client became two, then three." },
+  { year: "2018", title: "Multplyr", text: "I came from a tech background and started Multplyr, an HR tech business, with Ravi Vyas." },
+  { year: "2021", title: "Into recruitment", text: "Ravi and I moved into recruitment services, and Jilian joined us. A few people trusted us with their hiring. One client became two, then three." },
   { year: "2023", title: "All in, then a setback", text: "We went all in on technology hiring. It grew the business. Then two of our largest clients left as hiring froze, and close to 80% of the business went with them." },
   { year: "2024", title: "datavruti", text: "We rebranded as datavruti and kept rebuilding with more clients and more services. Getting back took more than two years." },
   { year: "Now", title: "Three products", text: "Building on datavruti with estana and graph, so the same idea reaches companies, agencies and professionals." },
@@ -366,14 +366,14 @@ export const earlyCareer: { key: "learn" | "risk" | "build"; label: string; stop
         },
       },
       {
-        year: "2018", what: "Founded", strong: "Multplyr", where: "The HR tech business that became datavruti", icon: "flag",
+        year: "2018", what: "Co-founded", strong: "Multplyr", after: " with Ravi Vyas", where: "The HR tech business that became datavruti", icon: "flag",
         detail: {
           org: "Multplyr",
-          role: "Founder",
+          role: "Co-founder, with Ravi Vyas",
           dates: "Mar 2018 – Feb 2025 · 7 yrs",
           place: "Ahmedabad, Gujarat, India",
           points: [
-            "Started as an HR tech business, then moved into recruitment services.",
+            "Started with Ravi Vyas as an HR tech business, then moved into recruitment services together.",
             "Multplyr is now datavruti, which hires data, AI and analytics talent for startups, GCCs and enterprises.",
           ],
           link: { href: "https://www.datavruti.com", label: "Visit datavruti" },
