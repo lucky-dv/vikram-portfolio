@@ -1,10 +1,10 @@
 "use client";
 
-import { ArrowLeft, Check, ExternalLink, Globe, ImagePlus, Loader2, Save, Settings2, Trash2, X } from "lucide-react";
+import { ArrowLeft, Check, ExternalLink, Globe, ImagePlus, Loader2, Save, Settings2, Sparkles, Trash2, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createPost, deletePost, updatePost, type PostInput } from "@/app/admin/actions";
+import { createPost, deletePost, suggestSeo, updatePost, type PostInput } from "@/app/admin/actions";
 import { uploadImage } from "./upload";
 
 const Editor = dynamic(() => import("./Editor"), { ssr: false, loading: () => <div className="adm-editor-skeleton" /> });
@@ -21,6 +21,7 @@ type Initial = {
   coverHeight: number;
   seoTitle: string;
   seoDescription: string;
+  seoAuto: boolean;
   featured: boolean;
   status: "DRAFT" | "PUBLISHED";
   publishedAt: string;
@@ -34,9 +35,10 @@ const EMPTY: Omit<Initial, "id"> = {
   coverImage: "",
   coverAlt: "",
   coverPosition: "center center",
-  coverHeight: 420,
+  coverHeight: 640,
   seoTitle: "",
   seoDescription: "",
+  seoAuto: true,
   featured: false,
   status: "DRAFT",
   publishedAt: "",
@@ -110,7 +112,7 @@ export default function PostForm({ initial }: { initial?: Initial }) {
       if (!res.ok) return notify(res.error, "err");
       uploads.current.clear();
       setDirty(false);
-      setV((p) => ({ ...p, status, slug: res.slug }));
+      setV((p) => ({ ...p, status, slug: res.slug, seoTitle: res.seoTitle ?? "", seoDescription: res.seoDescription ?? "", seoAuto: res.seoAuto }));
       notify(status === "PUBLISHED" ? (v.status === "PUBLISHED" ? "Changes are live." : "Published. It's live.") : "Draft saved.");
       if (!id) {
         setId(res.id);
@@ -161,6 +163,17 @@ export default function PostForm({ initial }: { initial?: Initial }) {
     }
   };
 
+  const [seoBusy, setSeoBusy] = useState(false);
+  const regenerateSeo = async () => {
+    setSeoBusy(true);
+    const res = await suggestSeo({ title: v.title, excerpt: v.excerpt, content: v.content });
+    setSeoBusy(false);
+    if ("error" in res) return notify(res.error, "err");
+    setV((p) => ({ ...p, seoTitle: res.seoTitle, seoDescription: res.seoDescription, seoAuto: true }));
+    setDirty(true);
+    notify(res.source === "ai" ? "SEO title and description written." : "Filled from the title and summary.");
+  };
+
   const seoTitle = v.seoTitle || v.title || "Post title";
   const seoDesc = v.seoDescription || v.excerpt || "A short summary appears here in search results.";
   const live = v.status === "PUBLISHED";
@@ -203,9 +216,9 @@ export default function PostForm({ initial }: { initial?: Initial }) {
         <main className="adm-canvas">
           {/* Cover */}
           {v.coverImage ? (
-            <figure className="adm-cover" style={{ height: Math.min(v.coverHeight, 520) }}>
+            <figure className="adm-cover">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={v.coverImage} alt={v.coverAlt} style={{ objectPosition: v.coverPosition }} />
+              <img src={v.coverImage} alt={v.coverAlt} style={{ objectPosition: v.coverPosition, maxHeight: `min(${v.coverHeight}px, 75vh)` }} />
               <div className="adm-cover-tools">
                 <label className="adm-btn adm-btn-light sm">
                   <ImagePlus size={14} /> Change
@@ -301,11 +314,35 @@ export default function PostForm({ initial }: { initial?: Initial }) {
                   <span className="adm-serp-desc">{seoDesc}</span>
                 </div>
               </Field>
-              <Field label="SEO title" hint={`${(v.seoTitle || v.title).length}/60 · defaults to the title`}>
-                <input className="adm-input" maxLength={70} value={v.seoTitle} placeholder={v.title} onChange={(e) => set("seoTitle", e.target.value)} />
+              <div className="adm-seo-head">
+                <span className={`adm-pill ${v.seoAuto ? "is-live" : ""}`}>{v.seoAuto ? "Auto" : "Custom"}</span>
+                <span className="adm-hint">
+                  {v.seoAuto
+                    ? live || v.seoTitle ? "Written for you from the article. Updates when the article changes." : "Written for you from the article when you publish."
+                    : "You've edited these, so they won't change automatically."}
+                </span>
+                <button type="button" className="adm-btn adm-btn-ghost sm" disabled={seoBusy} onClick={regenerateSeo}>
+                  {seoBusy ? <Loader2 size={14} className="spin" /> : <Sparkles size={14} />} {v.seoTitle ? "Regenerate" : "Generate"}
+                </button>
+              </div>
+              <Field label="SEO title" hint={`${(v.seoTitle || v.title).length}/60`}>
+                <input
+                  className="adm-input"
+                  maxLength={70}
+                  value={v.seoTitle}
+                  placeholder={v.seoAuto ? "Generated when you publish" : v.title}
+                  onChange={(e) => { setV((p) => ({ ...p, seoTitle: e.target.value, seoAuto: false })); setDirty(true); }}
+                />
               </Field>
-              <Field label="Meta description" hint={`${(v.seoDescription || v.excerpt).length}/155 · defaults to the summary`}>
-                <textarea className="adm-input" rows={3} maxLength={170} value={v.seoDescription} placeholder={v.excerpt} onChange={(e) => set("seoDescription", e.target.value)} />
+              <Field label="Meta description" hint={`${(v.seoDescription || v.excerpt).length}/155`}>
+                <textarea
+                  className="adm-input"
+                  rows={3}
+                  maxLength={170}
+                  value={v.seoDescription}
+                  placeholder={v.seoAuto ? "Generated when you publish" : v.excerpt}
+                  onChange={(e) => { setV((p) => ({ ...p, seoDescription: e.target.value, seoAuto: false })); setDirty(true); }}
+                />
               </Field>
 
               {v.coverImage && (
@@ -313,7 +350,7 @@ export default function PostForm({ initial }: { initial?: Initial }) {
                   <Field label="Cover alt text" hint="Describe the image for screen readers and search engines.">
                     <input className="adm-input" value={v.coverAlt} onChange={(e) => set("coverAlt", e.target.value)} />
                   </Field>
-                  <Field label="Cover focal point">
+                  <Field label="Cover focal point" hint="Used only when the image is cropped by the max height.">
                     <div className="adm-focal">
                       {FOCAL.map((f) => (
                         <button key={f} title={f} className={v.coverPosition === f ? "is-on" : ""} onClick={() => set("coverPosition", f)}>
@@ -322,7 +359,7 @@ export default function PostForm({ initial }: { initial?: Initial }) {
                       ))}
                     </div>
                   </Field>
-                  <Field label={`Cover height · ${v.coverHeight}px`}>
+                  <Field label={`Max cover height · ${v.coverHeight}px`} hint="The image shows uncropped unless it's taller than this; then the focal point decides what stays.">
                     <input type="range" min={200} max={720} step={10} value={v.coverHeight} onChange={(e) => set("coverHeight", Number(e.target.value))} />
                   </Field>
                 </>

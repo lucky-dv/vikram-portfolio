@@ -6,6 +6,7 @@ import { assertAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { BUCKET, ownPath, supabaseAdmin } from "@/lib/supabase";
 import { autoExcerpt, readingMinutes, sanitizeArticle } from "@/lib/sanitize";
+import { generateSeo, type SeoResult } from "@/lib/seo";
 
 const schema = z.object({
   title: z.string().trim().min(1, "Title is required").max(200),
@@ -20,16 +21,54 @@ const schema = z.object({
   coverImage: z.string().url().optional().or(z.literal("")),
   coverAlt: z.string().trim().max(200).optional(),
   coverPosition: z.string().max(40).default("center center"),
-  coverHeight: z.number().int().min(200).max(720).default(420),
+  coverHeight: z.number().int().min(200).max(720).default(640),
   seoTitle: z.string().trim().max(70).optional(),
   seoDescription: z.string().trim().max(170).optional(),
+  seoAuto: z.boolean().default(true),
   featured: z.boolean().default(false),
   status: z.enum(["DRAFT", "PUBLISHED"]),
   publishedAt: z.string().optional(), // yyyy-mm-dd override
 });
 
 export type PostInput = z.input<typeof schema>;
-type Result = { ok: true; id: string; slug: string } | { ok: false; error: string };
+type Result =
+  | { ok: true; id: string; slug: string; seoTitle: string | null; seoDescription: string | null; seoAuto: boolean }
+  | { ok: false; error: string };
+
+type PostData = {
+  title: string; excerpt: string; content: string; status: "DRAFT" | "PUBLISHED";
+  seoAuto: boolean; seoTitle: string | null; seoDescription: string | null;
+};
+
+/**
+ * Fill SEO fields automatically when they're in auto mode and the post is going live.
+ * Regenerates only when something that feeds them changed, so repeated saves cost nothing.
+ */
+async function withAutoSeo<T extends PostData>(
+  data: T,
+  current?: { title: string; excerpt: string | null; content: string; seoTitle: string | null; seoDescription: string | null } | null
+): Promise<T> {
+  if (!data.seoAuto || data.status !== "PUBLISHED") return data;
+  const unchanged =
+    current && current.seoTitle && current.seoDescription &&
+    current.title === data.title && (current.excerpt ?? "") === data.excerpt && current.content === data.content;
+  if (unchanged) return { ...data, seoTitle: current!.seoTitle, seoDescription: current!.seoDescription };
+  const seo = await generateSeo({ title: data.title, excerpt: data.excerpt, content: data.content });
+  return { ...data, seoTitle: seo.seoTitle, seoDescription: seo.seoDescription };
+}
+
+const ok = (p: { id: string; slug: string; seoTitle: string | null; seoDescription: string | null; seoAuto: boolean }): Result => ({
+  ok: true, id: p.id, slug: p.slug, seoTitle: p.seoTitle, seoDescription: p.seoDescription, seoAuto: p.seoAuto,
+});
+
+/** "Generate" button in the editor: preview fresh SEO fields without saving. */
+export async function suggestSeo(input: { title: string; excerpt?: string; content: string }): Promise<SeoResult | { error: string }> {
+  await assertAdmin();
+  if (!input.title.trim()) return { error: "Add a title first." };
+  const content = sanitizeArticle(input.content || "");
+  if (!content.replace(/<[^>]+>/g, "").trim()) return { error: "Write the article first." };
+  return generateSeo({ title: input.title.trim(), excerpt: input.excerpt?.trim() || autoExcerpt(content), content });
+}
 
 function revalidateAll(slug?: string) {
   revalidatePath("/");
@@ -59,6 +98,7 @@ function normalise(input: PostInput) {
       coverHeight: d.coverHeight,
       seoTitle: d.seoTitle || null,
       seoDescription: d.seoDescription || null,
+      seoAuto: d.seoAuto,
       featured: d.featured,
       status: d.status,
       readingMinutes: readingMinutes(content),
@@ -74,15 +114,16 @@ export async function createPost(input: PostInput): Promise<Result> {
   if (await prisma.post.findUnique({ where: { slug: n.data.slug } }))
     return { ok: false, error: "Another post already uses this slug." };
 
+  const data = await withAutoSeo(n.data);
   const post = await prisma.post.create({
     data: {
-      ...n.data,
+      ...data,
       editorEmail: user.email ?? null,
       publishedAt: n.data.status === "PUBLISHED" ? n.publishedAtOverride ?? new Date() : null,
     },
   });
   revalidateAll(post.slug);
-  return { ok: true, id: post.id, slug: post.slug };
+  return ok(post);
 }
 
 export async function updatePost(id: string, input: PostInput): Promise<Result> {
@@ -104,19 +145,29 @@ export async function updatePost(id: string, input: PostInput): Promise<Result> 
       ? override ?? current.publishedAt ?? new Date()
       : current.publishedAt; // keep the original date if it's unpublished and re-published later
 
-  const post = await prisma.post.update({ where: { id }, data: { ...n.data, publishedAt } });
+  const data = await withAutoSeo(n.data, current);
+  const post = await prisma.post.update({ where: { id }, data: { ...data, publishedAt } });
   revalidateAll(post.slug);
   if (current.slug !== post.slug) revalidatePath(`/writing/${current.slug}`);
-  return { ok: true, id: post.id, slug: post.slug };
+  return ok(post);
 }
 
 export async function setPostStatus(id: string, status: "DRAFT" | "PUBLISHED") {
   await assertAdmin();
   const current = await prisma.post.findUnique({ where: { id } });
   if (!current) return { ok: false as const, error: "Post not found." };
+  // Publishing from the list: fill auto SEO fields if they're still empty.
+  const seo =
+    status === "PUBLISHED" && current.seoAuto && (!current.seoTitle || !current.seoDescription)
+      ? await generateSeo({ title: current.title, excerpt: current.excerpt, content: current.content })
+      : null;
   const post = await prisma.post.update({
     where: { id },
-    data: { status, publishedAt: status === "PUBLISHED" ? current.publishedAt ?? new Date() : current.publishedAt },
+    data: {
+      status,
+      publishedAt: status === "PUBLISHED" ? current.publishedAt ?? new Date() : current.publishedAt,
+      ...(seo ? { seoTitle: seo.seoTitle, seoDescription: seo.seoDescription } : {}),
+    },
   });
   revalidateAll(post.slug);
   return { ok: true as const };

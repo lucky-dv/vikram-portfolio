@@ -105,14 +105,15 @@ export default async function PostPage({ params }: Props) {
 
         {post.coverImage && (
           <div className="wrap">
-            <figure className="article-cover" style={{ height: `min(${post.coverHeight}px, 62vh)` }}>
+            <figure className="article-cover">
               <Image
                 src={post.coverImage}
                 alt={post.coverAlt || post.title}
-                fill
+                width={1720}
+                height={968}
                 priority
-                sizes="(min-width: 1228px) 1180px, 100vw"
-                style={{ objectFit: "cover", objectPosition: post.coverPosition }}
+                sizes="(min-width: 908px) 860px, 100vw"
+                style={{ maxHeight: `min(${post.coverHeight}px, 75vh)`, objectPosition: post.coverPosition }}
               />
             </figure>
           </div>

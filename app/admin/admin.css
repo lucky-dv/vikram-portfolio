@@ -140,8 +140,8 @@
 }
 .adm-cover-drop:hover { border-color: var(--a-accent); color: var(--a-accent); background: var(--a-card); }
 .adm-cover-drop.is-busy { pointer-events: none; opacity: 0.7; }
-.adm-cover { position: relative; margin: 0 auto 32px; border-radius: 8px; overflow: hidden; background: var(--a-line-2); max-height: 52vh; }
-.adm-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm-cover { position: relative; margin: 0 auto 32px; border-radius: 8px; overflow: hidden; background: var(--a-line-2); }
+.adm-cover img { width: 100%; height: auto; object-fit: cover; display: block; }
 .adm-cover-tools { position: absolute; right: 12px; top: 12px; display: flex; gap: 6px; opacity: 0; transition: opacity 150ms; }
 .adm-cover:hover .adm-cover-tools, .adm-cover:focus-within .adm-cover-tools { opacity: 1; }
 @media (hover: none) { .adm-cover-tools { opacity: 1; } }
@@ -320,3 +320,8 @@
   .adm-toast { bottom: calc(20px + env(safe-area-inset-bottom, 0px)); max-width: calc(100vw - 32px); }
 }
 @media (max-width: 380px) { .adm .hide-xs { display: none; } }
+
+/* SEO auto/custom header in settings */
+.adm-seo-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 12px; margin-top: -6px; border-radius: 9px; background: var(--a-line-2); }
+.adm-seo-head .adm-hint { flex: 1 1 160px; }
+.adm-seo-head .adm-btn { margin-left: auto; background: #fff; }

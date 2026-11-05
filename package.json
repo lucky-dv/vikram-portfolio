@@ -11,6 +11,7 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.5.0",
     "@prisma/client": "^6.19.3",
     "@supabase/supabase-js": "^2.119.0",
     "@tiptap/extension-image": "^3.32.2",

@@ -30,6 +30,7 @@ model Post {
   coverHeight    Int        @default(420)
   seoTitle       String?
   seoDescription String?
+  seoAuto        Boolean    @default(true) // SEO fields are written by Claude until edited by hand
   status         PostStatus @default(DRAFT)
   featured       Boolean    @default(false)
   readingMinutes Int        @default(1)
