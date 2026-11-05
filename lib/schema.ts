@@ -59,7 +59,7 @@ export function buildJsonLd(feed: PostCard[]) {
         givenName: "Vikram",
         familyName: "Parekh",
         url: `${site.url}/`,
-        image: { "@type": "ImageObject", url: `${site.url}/vikram.jpg`, width: 1122, height: 1402, caption: site.name },
+        image: { "@type": "ImageObject", url: `${site.url}/vikram-profile.png`, width: 1122, height: 1402, caption: site.name },
         jobTitle: "Co-founder",
         description: site.description,
         email: `mailto:${site.email}`,

@@ -7,8 +7,8 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function OgImage() {
-  const photo = await readFile(join(process.cwd(), "public/vikram.jpg"));
-  const src = `data:image/jpeg;base64,${photo.toString("base64")}`;
+  const photo = await readFile(join(process.cwd(), "public/vikram-profile.png"));
+  const src = `data:image/png;base64,${photo.toString("base64")}`;
 
   return new ImageResponse(
     (

@@ -129,7 +129,7 @@ export default async function PostPage({ params }: Props) {
           <footer className="article-foot">
             <ShareBar url={url} title={post.title} />
             <div className="author-card">
-              <Image src="/vikram.jpg" alt={site.name} width={64} height={80} className="author-img" />
+              <Image src="/vikram-profile.png" alt={site.name} width={64} height={80} className="author-img" />
               <div>
                 <p className="author-name">{site.name}</p>
                 <p className="muted">

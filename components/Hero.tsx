@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { useRef } from "react";
-import portrait from "@/public/vikram.jpg";
+import portrait from "@/public/vikram-profile.png";
 import { site } from "@/lib/content";
 
 /**
@@ -49,7 +49,7 @@ export default function Hero() {
           <motion.div className="portrait-img" style={{ y: portraitY }}>
             <Image
               src={portrait}
-              alt="Vikram Parekh, co-founder of datavruti, smiling with arms folded"
+              alt="Vikram Parekh, co-founder of datavruti, smiling with arms folded, in a navy blazer"
               fill
               priority
               placeholder="blur"
