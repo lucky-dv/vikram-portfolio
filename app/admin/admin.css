@@ -328,3 +328,15 @@
 
 /* Action errors on the posts list */
 .adm-card > .adm-alert { margin: 0 28px 16px; }
+
+/* "Written for" audience toggles under the subtitle */
+.adm-audience { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 4px 0 28px; }
+.adm-audience-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--a-muted); margin-right: 4px; }
+.adm-audience-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px;
+  border: 1px solid var(--a-line); background: transparent; color: inherit; font: inherit; font-size: 13px; cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.adm-audience-chip:hover { border-color: var(--a-accent); }
+.adm-audience-chip.is-on { background: var(--a-accent); border-color: var(--a-accent); color: #F5F2EC; }
+.adm-audience .adm-hint { margin: 0; }

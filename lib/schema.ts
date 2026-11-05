@@ -1,4 +1,4 @@
-import { faqs, journey, keywords, site, ventureEntities, ventures } from "./content";
+import { journey, keywords, site, ventureEntities, ventures } from "./content";
 import type { PostCard } from "./posts";
 
 const PERSON_ID = `${site.url}/#person`;
@@ -6,7 +6,7 @@ const WEBSITE_ID = `${site.url}/#website`;
 const PAGE_ID = `${site.url}/#profilepage`;
 
 /**
- * Homepage JSON-LD only (ProfilePage + FAQPage describe content that's on "/"): one connected @graph. Every entity has a stable @id so search engines
+ * Homepage JSON-LD only (ProfilePage describes content that's on "/"; FAQPage lives on /faq): one connected @graph. Every entity has a stable @id so search engines
  * and LLM crawlers can resolve Vikram ↔ datavruti ↔ estana ↔ graph as linked entities.
  */
 export function buildJsonLd(feed: PostCard[]) {
@@ -107,7 +107,7 @@ export function buildJsonLd(feed: PostCard[]) {
         inLanguage: "en",
         dateModified: new Date().toISOString().slice(0, 10),
         significantLink: ventures.map((v) => v.url),
-        speakable: { "@type": "SpeakableSpecification", cssSelector: [".lede", "#about .prose", "#faq .faq"] },
+        speakable: { "@type": "SpeakableSpecification", cssSelector: [".lede", "#about .prose"] },
       },
       ...ventureNodes,
       ...softwareApps,
@@ -135,16 +135,6 @@ export function buildJsonLd(feed: PostCard[]) {
         publisher: { "@id": p.external ? ventureEntities.datavruti.id : PERSON_ID },
         inLanguage: "en",
       })),
-      {
-        "@type": "FAQPage",
-        "@id": `${site.url}/#faq`,
-        isPartOf: { "@id": PAGE_ID },
-        mainEntity: faqs.map((f) => ({
-          "@type": "Question",
-          name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: f.a },
-        })),
-      },
       {
         "@type": "ItemList",
         "@id": `${site.url}/#journey`,

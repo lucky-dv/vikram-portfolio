@@ -101,7 +101,8 @@ export default function Header() {
           </a>
           <nav aria-label="Primary">
             <ul className="nav-links">
-              {nav.map((n) => (
+              {/* Contact is the button on the right, so it isn't repeated as a link here. */}
+              {nav.filter((n) => n.href !== "#contact").map((n) => (
                 <li key={n.href}>
                   <a href={hrefFor(n.href)} className={onHome && active === n.href.slice(1) ? "is-active" : undefined}>
                     {n.label}
@@ -110,8 +111,8 @@ export default function Header() {
               ))}
             </ul>
           </nav>
-          <a className="btn btn-sm header-cta" href={site.linkedin} target="_blank" rel="me noopener">
-            Connect <span className="arrow" aria-hidden="true">→</span>
+          <a className="btn btn-sm header-cta" href={hrefFor("#contact")}>
+            Contact <span className="arrow" aria-hidden="true">→</span>
           </a>
           <button
             ref={toggleRef}

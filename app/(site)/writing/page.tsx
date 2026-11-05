@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PostList } from "@/components/Sections";
+import WritingFilter from "@/components/WritingFilter";
 import { site } from "@/lib/content";
 import { getWritingFeed } from "@/lib/posts";
 
@@ -46,7 +46,7 @@ export default async function WritingIndex() {
       </section>
       <section className="block" id="content" tabIndex={-1} aria-label="All posts">
         <div className="wrap">
-          {items.length ? <PostList items={items} /> : <p className="muted">Nothing published yet.</p>}
+          {items.length ? <WritingFilter items={items} syncUrl /> : <p className="muted">Nothing published yet.</p>}
         </div>
       </section>
     </main>

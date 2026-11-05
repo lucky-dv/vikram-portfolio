@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPost, deletePost, suggestSeo, updatePost, type PostInput } from "@/app/admin/actions";
+import { audiences } from "@/lib/content";
 import { uploadImage } from "./upload";
 
 const Editor = dynamic(() => import("./Editor"), { ssr: false, loading: () => <div className="adm-editor-skeleton" /> });
@@ -23,6 +24,7 @@ type Initial = {
   seoDescription: string;
   seoAuto: boolean;
   featured: boolean;
+  audiences: string[];
   status: "DRAFT" | "PUBLISHED";
   publishedAt: string;
 };
@@ -40,6 +42,7 @@ const EMPTY: Omit<Initial, "id"> = {
   seoDescription: "",
   seoAuto: true,
   featured: false,
+  audiences: [],
   status: "DRAFT",
   publishedAt: "",
 };
@@ -317,6 +320,25 @@ export default function PostForm({ initial }: { initial?: Initial }) {
               grow(e.target);
             }}
           />
+
+          <div className="adm-audience" role="group" aria-label="Written for">
+            <span className="adm-audience-label">Written for</span>
+            {audiences.map((a) => {
+              const on = v.audiences.includes(a.key);
+              return (
+                <button
+                  key={a.key}
+                  type="button"
+                  className={`adm-audience-chip${on ? " is-on" : ""}`}
+                  aria-pressed={on}
+                  onClick={() => set("audiences", on ? v.audiences.filter((k) => k !== a.key) : [...v.audiences, a.key])}
+                >
+                  {on ? <Check size={13} /> : null} {a.label}
+                </button>
+              );
+            })}
+            {!v.audiences.length && <span className="adm-hint">Pick at least one so readers can find it by filter.</span>}
+          </div>
 
           <Editor
             content={v.content}

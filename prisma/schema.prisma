@@ -39,6 +39,7 @@ model Post {
   updatedAt      DateTime   @updatedAt
   editorEmail    String?
   previousSlugs  String[]   @default([]) // old live URLs, 301-redirected to the current slug
+  audiences      String[]   @default([]) // who it's written for: keys from `audiences` in lib/content.ts
 
   @@index([status, publishedAt])
   @@map("posts")

@@ -31,6 +31,7 @@ export default async function EditPost({ params }: { params: Promise<{ id: strin
           seoDescription: post.seoDescription ?? "",
           seoAuto: post.seoAuto,
           featured: post.featured,
+          audiences: post.audiences,
           status: post.status,
           // IST calendar day, matching the date printed on the site
           publishedAt: post.publishedAt?.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }) ?? "",

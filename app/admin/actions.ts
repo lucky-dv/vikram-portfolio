@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { BUCKET, isStorageUrl, ownPath, postImageUrls, supabaseAdmin } from "@/lib/supabase";
 import { autoExcerpt, readingMinutes, sanitizeArticle } from "@/lib/sanitize";
 import { generateSeo, type SeoResult } from "@/lib/seo";
+import { audienceKeys } from "@/lib/content";
 
 const schema = z.object({
   title: z.string().trim().min(1, "Title is required").max(200),
@@ -30,6 +31,7 @@ const schema = z.object({
   seoDescription: z.string().trim().max(170).optional(),
   seoAuto: z.boolean().default(true),
   featured: z.boolean().default(false),
+  audiences: z.array(z.enum(audienceKeys as [string, ...string[]])).default([]),
   status: z.enum(["DRAFT", "PUBLISHED"]),
   publishedAt: z
     .string()
@@ -131,6 +133,7 @@ function normalise(input: PostInput) {
       seoDescription: d.seoDescription || null,
       seoAuto: d.seoAuto,
       featured: d.featured,
+      audiences: Array.from(new Set(d.audiences)),
       status: d.status,
       readingMinutes: readingMinutes(content),
     },

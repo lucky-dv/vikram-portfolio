@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: `${site.name}: ${site.tagline}`,
-    description: "Co-founder of datavruti (datavruti.com), building estana (estana.in) and graph (mygraph.id): talent infrastructure for data, AI and analytics.",
+    description: site.description,
     type: "profile",
     firstName: "Vikram",
     lastName: "Parekh",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: `${site.name}: ${site.tagline}`,
-    description: "Co-founder of datavruti, building estana and graph: talent infrastructure for data, AI and analytics.",
+    description: site.description,
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,

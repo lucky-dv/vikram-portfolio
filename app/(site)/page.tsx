@@ -1,6 +1,7 @@
 import Hero from "@/components/Hero";
+import EarlyCareer from "@/components/EarlyCareer";
 import Journey from "@/components/Journey";
-import { About, Building, Contact, Faq, Manifesto, Principles, Stats, Writing } from "@/components/Sections";
+import { About, Building, Contact, Manifesto, Principles, Stats, Writing } from "@/components/Sections";
 import { getWritingFeed } from "@/lib/posts";
 import { buildJsonLd } from "@/lib/schema";
 
@@ -12,7 +13,7 @@ export default async function Home() {
   const feed = all.slice(0, 5);
   return (
     <main id="top">
-      {/* Homepage-only structured data: the FAQ and profile it describes are on this page */}
+      {/* Homepage-only structured data: the profile it describes is on this page */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd(all)).replace(/</g, "\\u003c") }}
@@ -26,7 +27,7 @@ export default async function Home() {
       <Journey />
       <Principles />
       <Writing items={feed} />
-      <Faq />
+      <EarlyCareer />
       <Contact />
     </main>
   );
